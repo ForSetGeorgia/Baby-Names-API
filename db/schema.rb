@@ -29,11 +29,11 @@ ActiveRecord::Schema.define(version: 2018_06_07_143250) do
   create_table "years", force: :cascade do |t|
     t.integer "year"
     t.bigint "name_id"
-    t.integer "amount"
+    t.integer "amount", default: 0
     t.integer "amount_year_change"
-    t.decimal "amount_year_change_percent"
+    t.decimal "amount_year_change_percent", precision: 7, scale: 2
     t.integer "amount_total_change"
-    t.decimal "amount_total_change_percent"
+    t.decimal "amount_total_change_percent", precision: 7, scale: 2
     t.integer "gender_rank"
     t.integer "gender_rank_change"
     t.integer "overall_rank"
@@ -46,4 +46,5 @@ ActiveRecord::Schema.define(version: 2018_06_07_143250) do
     t.index ["year", "overall_rank"], name: "index_years_on_year_and_overall_rank"
   end
 
+  add_foreign_key "years", "names"
 end
