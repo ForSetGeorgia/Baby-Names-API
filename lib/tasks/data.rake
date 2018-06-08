@@ -9,9 +9,9 @@ namespace :data do
 
     if data.present?
       # column order:
-      # name, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017
+      # name, gender, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017
       years =* (2008..2017)
-      idx_first_year = 1
+      idx_first_year = 2
 
       # dropping all existing names
       Name.delete_all
@@ -30,7 +30,8 @@ namespace :data do
             # create name
             name = Name.create(
               name_ka: row[0].gsub("'", "\""),
-              name_en: row[0].gsub("'", "\"").latinize.titlecase
+              name_en: row[0].gsub("'", "\"").latinize.titlecase,
+              gender: row[1].nil? ? nil : row[1].downcase[0]
             )
 
             # create year
@@ -40,14 +41,14 @@ namespace :data do
 
               # if this is not the first year, then compute the changes
               if idx_year > 0
-                name_year.amount_year_change = get_value(row[idx_year+1]) - get_value(row[idx_year])
-                name_year.amount_total_change = get_value(row[idx_year+1]) - get_value(row[idx_first_year])
+                name_year.amount_year_change = name_year.amount - get_value(row[idx_year])
+                name_year.amount_total_change = name_year.amount - get_value(row[idx_first_year])
 
                 if get_value(row[idx_year]) > 0
-                  name_year.amount_year_change_percent = ((get_value(row[idx_year+1]) - get_value(row[idx_year])).to_f / get_value(row[idx_year])*100).round(2)
+                  name_year.amount_year_change_percent = ((name_year.amount - get_value(row[idx_year])).to_f / get_value(row[idx_year])*100).round(2)
                 end
                 if get_value(row[idx_first_year]) > 0
-                  name_year.amount_total_change_percent = ((get_value(row[idx_year+1]) - get_value(row[idx_first_year])).to_f / get_value(row[idx_first_year])*100).round(2)
+                  name_year.amount_total_change_percent = ((name_year.amount - get_value(row[idx_first_year])).to_f / get_value(row[idx_first_year])*100).round(2)
                 end
               end
               name_year.save
@@ -62,6 +63,8 @@ namespace :data do
 
 end
 
+##########################
+## helper method for the task above
 def get_value(item)
   item.nil? || item.length == 0 ? 0 : item.to_i
 end

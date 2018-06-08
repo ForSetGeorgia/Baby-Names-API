@@ -3,7 +3,7 @@ class CreateNames < ActiveRecord::Migration[5.2]
     create_table :names do |t|
       t.string :name_ka
       t.string :name_en
-      t.integer :gender
+      t.string :gender, limit: 1
 
       t.timestamps
     end

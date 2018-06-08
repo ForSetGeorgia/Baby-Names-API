@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2018_06_07_143250) do
   create_table "names", force: :cascade do |t|
     t.string "name_ka"
     t.string "name_en"
-    t.integer "gender"
+    t.string "gender", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["gender"], name: "index_names_on_gender"
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 2018_06_07_143250) do
   end
 
   create_table "years", force: :cascade do |t|
-    t.integer "year"
+    t.integer "year", limit: 2
     t.bigint "name_id"
     t.integer "amount", default: 0
     t.integer "amount_year_change"

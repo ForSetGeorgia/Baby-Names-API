@@ -1,17 +1,17 @@
 class CreateYears < ActiveRecord::Migration[5.2]
   def change
     create_table :years do |t|
-      t.integer :year
+      t.integer :year, limit: 2
       t.references :name, foreign_key: true
-      t.integer :amount, default: 0
-      t.integer :amount_year_change
+      t.integer :amount, default: 0, limit: 3
+      t.integer :amount_year_change, limit: 3
       t.decimal :amount_year_change_percent, precision: 7, scale: 2
-      t.integer :amount_total_change
+      t.integer :amount_total_change, limit: 3
       t.decimal :amount_total_change_percent, precision: 7, scale: 2
-      t.integer :gender_rank
-      t.integer :gender_rank_change
-      t.integer :overall_rank
-      t.integer :overall_rank_change
+      t.integer :gender_rank, limit: 3
+      t.integer :gender_rank_change, limit: 3
+      t.integer :overall_rank, limit: 3
+      t.integer :overall_rank_change, limit: 3
 
       t.timestamps
     end
