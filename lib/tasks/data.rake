@@ -123,6 +123,72 @@ namespace :data do
     puts "\n TOTAL TIME FOR OVERALL RANK AND RANK CHANGE FOR ALL YEARS: #{Time.now - start} seconds"
   end
 
+  desc "Create the overall ranks for all names for each year and gender"
+  task generate_gender_ranks: :environment do
+
+    start = Time.now
+    years =* (2008..2017)
+    genders = ['m', 'f']
+
+    Year.transaction do
+      years.each do |year|
+        genders.each do |gender|
+          puts "------------------------\n#{year} - #{gender}, total time so far: #{Time.now-start} seconds"
+
+          current_amount = 0
+          rank = 0
+          num_records_same_amount = 1
+
+          Year.where(:year => year).includes(:name).where(names: {gender: gender}).order("years.amount desc").each_with_index do |record, index|
+            puts "-index = #{index}, amount = #{record.amount}, total time so far: #{Time.now-start} seconds" if index%500 == 0
+            # only create rank if there is an amount > 0
+            if !record.amount.nil? && record.amount > 0
+              if record.amount == current_amount
+                # found name with same amount
+                num_records_same_amount += 1 # increase the num of records with this count
+              else
+                # found new amount
+                current_amount = record.amount # save the new amount value
+                rank = rank + num_records_same_amount # increase the rank value
+                num_records_same_amount = 1 # reset counter
+              end
+              # save the rank value
+              record.gender_rank = rank
+              record.save
+            end
+          end
+        end
+      end
+
+      puts "\n TOTAL TIME FOR GENDER RANK FOR ALL YEARS: #{Time.now - start} seconds"
+
+      # now we can create the rank change value
+      # - for each name, compute rank change for each year
+      puts "now creating rank change"
+      Name.all.each_with_index do |name, index|
+        puts "-index = #{index}, total time so far: #{Time.now-start} seconds" if index%500 == 0
+
+        years = name.years.order('year desc')
+        years.each_with_index do |year, index|
+          # do not need to create change
+          # - if this is the first year of 2008
+          # - if this year has no rank
+          # - if last year has no rank
+          if year.year > 2008 && !year.gender_rank.nil? && year.gender_rank > 0 &&
+              !years[index+1].gender_rank.nil? && years[index+1].gender_rank > 0
+            # need to multiple by -1 to properly show the rank went up or down
+            year.gender_rank_change = -1 * (year.gender_rank - years[index+1].gender_rank)
+            year.save
+          end
+        end
+      end
+
+    end
+
+
+    puts "\n TOTAL TIME FOR OVERALL RANK AND RANK CHANGE FOR ALL YEARS: #{Time.now - start} seconds"
+  end
+
 end
 
 ##########################
