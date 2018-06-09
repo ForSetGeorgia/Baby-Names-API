@@ -9,4 +9,10 @@ class Year < ApplicationRecord
   ##################
   validates_presence_of :year
 
+  ##################
+  ## SCOPES
+  ##################
+  def self.unique
+    select('year').distinct.pluck(:year).uniq.sort
+  end
 end

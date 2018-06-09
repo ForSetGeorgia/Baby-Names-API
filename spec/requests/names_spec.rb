@@ -5,21 +5,38 @@ RSpec.describe 'Names API', type: :request do
   let!(:names) { create_list(:name, 10) }
   let(:name_id) { names.first.id }
 
-  # Test suite for GET /names
-  describe 'GET /names' do
-    # make HTTP get request before each example
-    before { get '/names' }
+  # GET /names/search
+  # - params: q, limit
+  describe 'GET /names/search' do
+    # valid payload
+    let(:valid_attributes) { { q: 'Gio', limit: 10 } }
 
-    it 'returns names' do
-      # Note `json` is a custom helper to parse JSON responses
-      expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+    context 'when the request is valid' do
+      before { get '/names/search', params: valid_attributes }
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
     end
 
-    it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+    context 'when the request has no search' do
+      before { get '/names/search', params: { limit: 10 } }
+
+      it 'returns no matches' do
+        expect(json).to be_empty
+        expect(json.size).to eq(0)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+
     end
   end
+
+  # GET /names/top_by_gender
+  # - params: gender, year, limit
+
 
   # Test suite for GET /names/:id
   describe 'GET /names/:id' do

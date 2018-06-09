@@ -2,15 +2,16 @@ class NamesController < ApplicationController
 
   before_action :set_name, only: [:show]
 
-  # GET /names
-  def index
-    @names = Name.all
-    json_response(@names)
-  end
-
   # GET /names/:id
   def show
     json_response(@name)
+  end
+
+  # GET /names/search
+  def search
+    params[:limit] ||= 20
+    @names = Name.search(params[:q]).limit(params[:limit])
+    json_response(@names)
   end
 
   private
