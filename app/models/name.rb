@@ -1,3 +1,12 @@
 class Name < ApplicationRecord
-  has_many :years
+  ##################
+  ## ASSOCIATIONS
+  ##################
+  has_many :years, dependent: :destroy
+
+  ##################
+  ## VALIDATIONS
+  ##################
+  validates_presence_of :name_ka, :name_en
+
 end
