@@ -8,8 +8,8 @@ class V1::NamesController < ApplicationController
   # GET /names/search
   def search
     params[:limit] ||= 20
-    @names = Name.search(params[:q]).limit(params[:limit])
-    render json: @names, each_serializer: NameSerializer
+    @names = Name.search(params[:q]).limit(params[:limit]).with_most_recent_year
+    render json: @names, each_serializer: NameYearsSerializer
   end
 
 end
