@@ -31,6 +31,10 @@ class Name < ApplicationRecord
   ##################
   ## SCOPES
   ##################
+  def self.with_gender(gender)
+    where(gender: gender)
+  end
+
   def self.search(q=nil)
     x = nil
     if q.nil?
@@ -47,15 +51,19 @@ class Name < ApplicationRecord
 
   # sort the names by how popular they are in the last year
   def self.sort_popular
-    joins(:years).order('years.amount desc').where(years: {year: Year.most_recent_year})
+    with_year(Year.most_recent_year).order('years.amount desc')
   end
 
-  def self.with_most_recent_year
-    includes(:years).where('years.year = ?', Year.most_recent_year)
+  def self.with_year(year)
+    joins(:years).where('years.year = ?', year)
   end
 
   def self.with_years
-    includes(:years).order('years.year desc')
+    joins(:years).order('years.year desc')
+  end
+
+  def self.with_most_recent_year
+    with_year(Year.most_recent_year)
   end
 
   ##################

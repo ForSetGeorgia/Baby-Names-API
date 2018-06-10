@@ -7,6 +7,8 @@ Rails.application.routes.draw do
       resources :names, only: [:index, :show] do
         collection do
           get 'search'
+          get 'most_popular_for_year'
+          get 'most_popular_for_year_and_gender'
         end
       end
     end
