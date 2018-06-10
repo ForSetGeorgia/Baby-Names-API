@@ -34,12 +34,12 @@ class Year < ApplicationRecord
     order('years.amount desc')
   end
 
-  def self.with_name
-    select('years.*, names.name_ka, names.name_en, names.gender, names.slug as name_slug').joins(:name)
-  end
-
   def self.with_year(year)
     where('years.year = ?', year)
+  end
+
+  def self.with_name
+    select('years.*, names.name_ka, names.name_en, names.gender, names.slug as name_slug').joins(:name)
   end
 
   def self.search_name(q=nil)
@@ -55,6 +55,13 @@ class Year < ApplicationRecord
     # limit to most recent year
     # sort by amount desc
     x.with_name.with_year(Year.most_recent_year).sorted_amount_desc
+  end
+
+  # find the name and get all years
+  def self.name_details(name_slug)
+    name_id = Name.friendly.find(name_slug).id
+
+    where('years.name_id = ?', name_id).with_name.sorted_desc
   end
 
   def self.most_popular_for_year(year, rank_limit=20)

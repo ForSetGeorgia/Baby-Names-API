@@ -1,8 +1,9 @@
 class V1Controller < ApplicationController
 
-  # GET /v1/name/:id
+  # GET /v1/name
+  # params: id
   def name
-    render json: Name.with_years.friendly.find(params[:id]), serializer: NameYearsSerializer
+    render json: Year.name_details(params[:id]), each_serializer: YearNameSerializer
   end
 
   # GET /v1/years
