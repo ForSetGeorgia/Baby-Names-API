@@ -53,13 +53,13 @@ namespace :data do
               # if this is not the first year, then compute the changes
               if idx_year > 0
                 name_year.amount_year_change = name_year.amount - get_value(row[idx_year])
-                name_year.amount_total_change = name_year.amount - get_value(row[idx_first_year])
+                name_year.amount_overall_change = name_year.amount - get_value(row[idx_first_year])
 
                 if get_value(row[idx_year]) > 0
                   name_year.amount_year_change_percent = ((name_year.amount - get_value(row[idx_year])).to_f / get_value(row[idx_year])*100).round(2)
                 end
                 if get_value(row[idx_first_year]) > 0
-                  name_year.amount_total_change_percent = ((name_year.amount - get_value(row[idx_first_year])).to_f / get_value(row[idx_first_year])*100).round(2)
+                  name_year.amount_overall_change_percent = ((name_year.amount - get_value(row[idx_first_year])).to_f / get_value(row[idx_first_year])*100).round(2)
                 end
               end
               name_year.save

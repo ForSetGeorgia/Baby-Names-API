@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_10_064643) do
+ActiveRecord::Schema.define(version: 2018_06_10_142800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,8 +46,8 @@ ActiveRecord::Schema.define(version: 2018_06_10_064643) do
     t.integer "amount", default: 0
     t.integer "amount_year_change"
     t.decimal "amount_year_change_percent", precision: 7, scale: 2
-    t.integer "amount_total_change"
-    t.decimal "amount_total_change_percent", precision: 7, scale: 2
+    t.integer "amount_overall_change"
+    t.decimal "amount_overall_change_percent", precision: 7, scale: 2
     t.integer "gender_rank"
     t.integer "gender_rank_change"
     t.integer "overall_rank"
