@@ -9,6 +9,8 @@ Rails.application.routes.draw do
           get 'search'
           get 'most_popular_for_year'
           get 'most_popular_for_year_and_gender'
+          get 'least_popular_for_year'
+          get 'least_popular_for_year_and_gender'
         end
       end
     end
