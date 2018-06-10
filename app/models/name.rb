@@ -50,6 +50,10 @@ class Name < ApplicationRecord
     joins(:years).order('years.amount desc').where(years: {year: Year.most_recent_year})
   end
 
+  def self.with_years
+    includes(:years).order('years.amount desc')
+  end
+
   ##################
   ## METHODS
   ##################
