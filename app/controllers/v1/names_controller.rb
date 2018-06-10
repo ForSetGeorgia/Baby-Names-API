@@ -1,4 +1,4 @@
-class NamesController < ApplicationController
+class V1::NamesController < ApplicationController
 
   before_action :set_name, only: [:show]
 

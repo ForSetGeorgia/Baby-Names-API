@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe 'Years API', type: :request do
+RSpec.describe 'Years V1 API', type: :request do
   # Initialize the test data
   let!(:name) { create(:name) }
   let!(:years) { create_list(:year, 20, name_id: name.id) }
 
-  # Test suite for GET /years
-  describe 'GET /years' do
+  # Test suite for GET /v1/years
+  describe 'GET /v1/years' do
     # make HTTP get request before each example
-    before { get '/years' }
+    before { get '/v1/years' }
 
     it 'returns years' do
       # Note `json` is a custom helper to parse JSON responses
