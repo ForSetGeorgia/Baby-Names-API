@@ -31,5 +31,17 @@ module BabyNames
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Load all locale files (including those nested in folders)
+    config.i18n.load_path += Dir[
+      Rails.root.join('config', 'locales', '**', '*.{rb,yml}')
+    ]
+
+    config.i18n.default_locale = :ka
+
+    config.i18n.available_locales = [:ka, :en]
+
+    config.i18n.fallbacks = true
+
   end
 end

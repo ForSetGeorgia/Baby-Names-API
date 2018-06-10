@@ -15,4 +15,8 @@ class Year < ApplicationRecord
   def self.unique
     select('year').distinct.pluck(:year).uniq.sort
   end
+
+  def self.most_recent_year
+    unique.last
+  end
 end
