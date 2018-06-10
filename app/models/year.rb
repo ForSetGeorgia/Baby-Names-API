@@ -27,7 +27,34 @@ class Year < ApplicationRecord
   end
 
   def self.sorted_desc
-    order('years desc')
+    order('years.year desc')
+  end
+
+  def self.sorted_amount_desc
+    order('years.amount desc')
+  end
+
+  def self.with_name
+    select('years.*, names.name_ka, names.name_en, names.gender, names.slug as name_slug').joins(:name)
+  end
+
+  def self.with_year(year)
+    where('years.year = ?', year)
+  end
+
+  def self.search_name(q=nil)
+    x = if q.nil?
+      Year.none
+    elsif I18n.locale == :ka
+      where("names.name_ka LIKE ?", "%#{q}%")
+    elsif I18n.locale == :en
+      where("lower(names.name_en) LIKE lower(?)", "%#{q}%")
+    end
+
+    # add name connection
+    # limit to most recent year
+    # sort by amount desc
+    x.with_name.with_year(Year.most_recent_year).sorted_amount_desc
   end
 
   def self.most_popular_for_year(year, rank_limit=20)
@@ -73,10 +100,6 @@ class Year < ApplicationRecord
     where(years: {id: ids})
     .with_name
     .order('years.gender_rank desc, names.name_ka asc')
-  end
-
-  def self.with_name
-    select('years.*, names.name_ka, names.name_en, names.gender, names.slug as name_slug').joins(:name)
   end
 
   ##################

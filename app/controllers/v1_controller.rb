@@ -14,8 +14,8 @@ class V1Controller < ApplicationController
   # - params: q, limit
   def search
     limit = params[:limit].nil? || params[:limit].to_i == 0 ? 20 : params[:limit].to_i
-    @names = Name.search(params[:q]).limit(limit).with_most_recent_year
-    render json: @names, each_serializer: NameYearsSerializer
+    @names = Year.search_name(params[:q]).limit(limit)
+    render json: @names, each_serializer: YearNameSerializer
   end
 
   # GET /v1/most_popular_for_year
