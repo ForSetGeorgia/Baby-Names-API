@@ -1,5 +1,10 @@
 class V1::NamesController < ApplicationController
 
+  # GET /names/years
+  def years
+    render json: Year.unique
+  end
+
   # GET /names/:id
   def show
     render json: Name.with_years.friendly.find(params[:id]), serializer: NameYearsSerializer

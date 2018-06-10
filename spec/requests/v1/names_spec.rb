@@ -4,6 +4,23 @@ RSpec.describe 'Names V1 API', type: :request do
   # initialize test data
   let!(:names) { create_list(:name, 10) }
   let(:name_id) { names.first.id }
+  let!(:years) { create_list(:year, 20, name_id: name_id) }
+
+  # Test suite for GET /v1/names/years
+  describe 'GET /v1/names/years' do
+    # make HTTP get request before each example
+    before { get '/v1/names/years' }
+
+    it 'returns years' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json.size).to eq(20)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
 
   # GET /v1/names/search
   # - params: q, limit
