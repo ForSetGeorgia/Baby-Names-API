@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_07_143250) do
+ActiveRecord::Schema.define(version: 2018_06_10_064643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
+    t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
 
   create_table "names", force: :cascade do |t|
     t.string "name_ka"
@@ -21,9 +33,11 @@ ActiveRecord::Schema.define(version: 2018_06_07_143250) do
     t.string "gender", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug"
     t.index ["gender"], name: "index_names_on_gender"
     t.index ["name_en"], name: "index_names_on_name_en"
     t.index ["name_ka"], name: "index_names_on_name_ka"
+    t.index ["slug"], name: "index_names_on_slug", unique: true
   end
 
   create_table "years", force: :cascade do |t|
@@ -40,7 +54,9 @@ ActiveRecord::Schema.define(version: 2018_06_07_143250) do
     t.integer "overall_rank_change"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug"
     t.index ["name_id"], name: "index_years_on_name_id"
+    t.index ["slug"], name: "index_years_on_slug", unique: true
     t.index ["year", "amount"], name: "index_years_on_year_and_amount"
     t.index ["year", "gender_rank"], name: "index_years_on_year_and_gender_rank"
     t.index ["year", "overall_rank"], name: "index_years_on_year_and_overall_rank"

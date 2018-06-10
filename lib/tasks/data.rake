@@ -1,4 +1,15 @@
 namespace :data do
+  desc "Upload all data and create ranks"
+  task do_everything: :environment do
+    start = Time.now
+
+    Rake.application.invoke_task('data:upload_data')
+    Rake.application.invoke_task('data:generate_overall_ranks')
+    Rake.application.invoke_task('data:generate_gender_ranks')
+
+    puts "TIME TO LOAD ALL DATA AND CREATE RANKS = #{((Time.now - start)/60).round(2)} minutes"
+  end
+
   desc "Upload the names and count data from CSV into the DB"
   task upload_data: :environment do
     require 'csv'

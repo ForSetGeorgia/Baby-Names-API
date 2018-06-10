@@ -22,6 +22,6 @@ class NamesController < ApplicationController
   end
 
   def set_name
-    @name = Name.find(params[:id])
+    @name = Name.friendly.find(params[:id])
   end
 end

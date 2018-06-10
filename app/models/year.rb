@@ -10,6 +10,12 @@ class Year < ApplicationRecord
   validates_presence_of :year
 
   ##################
+  ## URL SLUGS
+  ##################
+  extend FriendlyId
+  friendly_id :year, use: :slugged
+
+  ##################
   ## SCOPES
   ##################
   def self.unique
@@ -18,5 +24,9 @@ class Year < ApplicationRecord
 
   def self.most_recent_year
     unique.last
+  end
+
+  def self.sorted_desc
+    order('years desc')
   end
 end
