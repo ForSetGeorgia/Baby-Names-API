@@ -48,7 +48,7 @@ namespace :data do
             # create year
             years.each_with_index do |year, idx_year|
               name_year = name.years.new(year: year)
-              name_year.amount = get_value(row[idx_year+1])
+              name_year.amount = get_value(row[idx_year+idx_first_year])
 
               # if this is not the first year, then compute the changes
               if idx_year > 0
