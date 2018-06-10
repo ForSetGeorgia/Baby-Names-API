@@ -4,14 +4,14 @@ class V1::NamesController < ApplicationController
 
   # GET /names/:id
   def show
-    json_response(@name)
+    json_response(NameSerializer.new(@name).serialized_json)
   end
 
   # GET /names/search
   def search
     params[:limit] ||= 20
     @names = Name.search(params[:q]).limit(params[:limit])
-    json_response(@names)
+    json_response(NameSerializer.new(@names).serialized_json)
   end
 
   private
