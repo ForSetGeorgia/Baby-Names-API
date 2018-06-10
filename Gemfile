@@ -31,7 +31,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'dotenv-rails', '~> 2.1', '>= 2.1.1' # env variables
 gem 'friendly_id', '~> 5.2', '>= 5.2.4' # url slugs
 gem 'stringex', '~> 2.8', '>= 2.8.4' # convert ka to latin for slugs
-gem 'fast_jsonapi', '~> 1.1', '>= 1.1.1' # serialize api calls
+gem 'active_model_serializers', '~> 0.10.7' # serialize api calls
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

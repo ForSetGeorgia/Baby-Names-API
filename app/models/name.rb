@@ -51,7 +51,7 @@ class Name < ApplicationRecord
   end
 
   def self.with_years
-    includes(:years).order('years.amount desc')
+    includes(:years).order('years.year desc')
   end
 
   ##################
