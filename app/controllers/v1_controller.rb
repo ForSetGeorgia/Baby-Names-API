@@ -6,11 +6,6 @@ class V1Controller < ApplicationController
     render json: Year.name_details(params[:id]), each_serializer: YearNameSerializer
   end
 
-  # GET /v1/years
-  def years
-    render json: Year.unique
-  end
-
   # GET /v1/search
   # - params: q, limit
   def search
@@ -18,6 +13,13 @@ class V1Controller < ApplicationController
     @names = Year.name_search(params[:q]).limit(limit)
     render json: @names, each_serializer: YearNameSerializer
   end
+
+
+  # GET /v1/years
+  def years
+    render json: Year.unique
+  end
+
 
   # GET /v1/most_popular_for_year
   # - params: year, limit
@@ -50,4 +52,17 @@ class V1Controller < ApplicationController
     @names = Year.least_popular_for_year_and_gender(params[:year], params[:gender], limit)
     render json: @names, each_serializer: YearNameSerializer
   end
+
+
+  # GET /v1/years_amount_summary
+  def years_amount_summary
+    render json: Year.years_amount_summary, each_serializer: YearsAmountSummarySerializer
+  end
+
+  # GET /v1/years_amount_summary
+  def years_unique_names_summary
+    render json: Year.years_unique_names_summary, each_serializer: YearsUniqueNamesSummarySerializer
+  end
+
+
 end
