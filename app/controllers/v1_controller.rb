@@ -15,7 +15,7 @@ class V1Controller < ApplicationController
   # - params: q, limit
   def search
     limit = params[:limit].nil? || params[:limit].to_i == 0 ? 20 : params[:limit].to_i
-    @names = Year.search_name(params[:q]).limit(limit)
+    @names = Year.name_search(params[:q]).limit(limit)
     render json: @names, each_serializer: YearNameSerializer
   end
 

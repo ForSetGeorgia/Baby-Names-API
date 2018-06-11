@@ -26,7 +26,7 @@ class Year < ApplicationRecord
     unique.last
   end
 
-  def self.sorted_desc
+  def self.sorted_year_desc
     order('years.year desc')
   end
 
@@ -42,7 +42,9 @@ class Year < ApplicationRecord
     select('years.*, names.name_ka, names.name_en, names.gender, names.slug as name_slug').joins(:name)
   end
 
-  def self.search_name(q=nil)
+
+
+  def self.name_search(q=nil)
     x = if q.nil?
       Year.none
     elsif I18n.locale == :ka
@@ -61,8 +63,10 @@ class Year < ApplicationRecord
   def self.name_details(name_slug)
     name_id = Name.friendly.find(name_slug).id
 
-    where('years.name_id = ?', name_id).with_name.sorted_desc
+    where('years.name_id = ?', name_id).with_name.sorted_year_desc
   end
+
+
 
   def self.most_popular_for_year(year, rank_limit=20)
     where(year: year).where('years.overall_rank <= ?', rank_limit)
@@ -108,6 +112,9 @@ class Year < ApplicationRecord
     .with_name
     .order('years.gender_rank desc, names.name_ka asc')
   end
+
+
+
 
   ##################
   ## METHODS
