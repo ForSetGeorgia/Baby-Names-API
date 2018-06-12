@@ -14,4 +14,8 @@ class YearNameSerializer < ActiveModel::Serializer
     "#{object.locale_name}"
   end
 
+  def gender
+    "#{object.gender == 'f' ? 'Girl' : object.gender == 'm' ? 'Boy' : '' }"
+  end
+
 end
