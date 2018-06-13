@@ -49,17 +49,21 @@ namespace :data do
             years.each_with_index do |year, idx_year|
               name_year = name.years.new(year: year)
               name_year.amount = get_value(row[idx_year+idx_first_year])
+              idx_last_year = idx_year+idx_first_year-1
 
               # if this is not the first year, then compute the changes
               if idx_year > 0
-                name_year.amount_year_change = name_year.amount - get_value(row[idx_year])
-                name_year.amount_overall_change = name_year.amount - get_value(row[idx_first_year])
+                last_year_amount = get_value(row[idx_last_year])
+                first_year_amount = get_value(row[idx_first_year])
 
-                if get_value(row[idx_year]) > 0
-                  name_year.amount_year_change_percent = ((name_year.amount - get_value(row[idx_year])).to_f / get_value(row[idx_year])*100).round(2)
+                name_year.amount_year_change = name_year.amount - last_year_amount
+                name_year.amount_overall_change = name_year.amount - first_year_amount
+
+                if last_year_amount > 0
+                  name_year.amount_year_change_percent = ((name_year.amount - last_year_amount).to_f / last_year_amount*100).round(2)
                 end
-                if get_value(row[idx_first_year]) > 0
-                  name_year.amount_overall_change_percent = ((name_year.amount - get_value(row[idx_first_year])).to_f / get_value(row[idx_first_year])*100).round(2)
+                if first_year_amount > 0
+                  name_year.amount_overall_change_percent = ((name_year.amount - first_year_amount).to_f / first_year_amount*100).round(2)
                 end
               end
               name_year.save
