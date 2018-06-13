@@ -13,6 +13,12 @@ Rails.application.routes.draw do
       get 'least_popular_for_year', defaults: { format: 'json' }
       get 'least_popular_for_year_and_gender', defaults: { format: 'json' }
 
+      get 'largest_amount_increase_for_year', defaults: { format: 'json' }
+      get 'largest_amount_increase_for_year_and_gender', defaults: { format: 'json' }
+      get 'largest_amount_decrease_for_year', defaults: { format: 'json' }
+      get 'largest_amount_decrease_for_year_and_gender', defaults: { format: 'json' }
+
+
       get 'years_amount_summary', defaults: { format: 'json' }
       get 'years_unique_names_summary', defaults: { format: 'json' }
     end

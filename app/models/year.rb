@@ -72,19 +72,19 @@ class Year < ApplicationRecord
 
 
 
-  def self.most_popular_for_year(year, rank_limit=20)
+  def self.most_popular_for_year(year, rank_limit=10)
     where(year: year).where('years.overall_rank <= ?', rank_limit)
     .select_years_and_names.with_name
     .order('years.overall_rank asc, names.name_ka asc')
   end
 
-  def self.most_popular_for_year_and_gender(year, gender, rank_limit=20)
+  def self.most_popular_for_year_and_gender(year, gender, rank_limit=10)
     where(year: year).where('years.gender_rank <= ?', rank_limit)
     .select_years_and_names.with_name.where('names.gender = ?', gender)
     .order('years.gender_rank asc, names.name_ka asc')
   end
 
-  def self.least_popular_for_year(year, rank_limit=20)
+  def self.least_popular_for_year(year, rank_limit=10)
     # first get year ids and rank
     # then get the number of unique ranks that match rank_limit
     # then get the data
@@ -100,7 +100,7 @@ class Year < ApplicationRecord
     .order('years.overall_rank desc, names.name_ka asc')
   end
 
-  def self.least_popular_for_year_and_gender(year, gender, rank_limit=20)
+  def self.least_popular_for_year_and_gender(year, gender, rank_limit=10)
     # first get year ids and rank
     # then get the number of unique ranks that match rank_limit
     # then get the data
@@ -116,6 +116,37 @@ class Year < ApplicationRecord
     .select_years_and_names.with_name
     .order('years.gender_rank desc, names.name_ka asc')
   end
+
+
+
+  def self.largest_amount_increase_for_year(year, limit=10)
+    where(year: year).where('amount_year_change > 0')
+    .select_years_and_names.with_name
+    .order('years.amount_year_change desc, names.name_ka asc')
+    .limit(limit)
+  end
+
+  def self.largest_amount_increase_for_year_and_gender(year, gender, limit=10)
+    where(year: year).where('amount_year_change > 0')
+    .select_years_and_names.with_name.where('names.gender = ?', gender)
+    .order('years.amount_year_change desc, names.name_ka asc')
+    .limit(limit)
+  end
+
+  def self.largest_amount_decrease_for_year(year, limit=10)
+    where(year: year).where('amount_year_change < 0')
+    .select_years_and_names.with_name
+    .order('years.amount_year_change asc, names.name_ka asc')
+    .limit(limit)
+  end
+
+  def self.largest_amount_decrease_for_year_and_gender(year, gender, limit=10)
+    where(year: year).where('amount_year_change < 0')
+    .select_years_and_names.with_name.where('names.gender = ?', gender)
+    .order('years.amount_year_change asc, names.name_ka asc')
+    .limit(limit)
+  end
+
 
 
   # for each year, count how many babies were born and how many unique names there were

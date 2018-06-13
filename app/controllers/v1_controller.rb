@@ -54,6 +54,41 @@ class V1Controller < ApplicationController
   end
 
 
+  # GET /v1/largest_amount_increase_for_year
+  # - params: year, limit
+  def largest_amount_increase_for_year
+    limit = set_limit
+    @names = Year.largest_amount_increase_for_year(params[:year], limit)
+    render json: @names, each_serializer: YearNameSerializer, :callback => params[:callback]
+  end
+
+  # GET /v1/largest_amount_increase_for_year_and_gender
+  # - params: year, gender, limit
+  def largest_amount_increase_for_year_and_gender
+    limit = set_limit
+    @names = Year.largest_amount_increase_for_year_and_gender(params[:year], params[:gender], limit)
+    render json: @names, each_serializer: YearNameSerializer, :callback => params[:callback]
+  end
+
+  # GET /v1/largest_amount_decrease_for_year
+  # - params: year, limit
+  def largest_amount_decrease_for_year
+    limit = set_limit
+    @names = Year.largest_amount_decrease_for_year(params[:year], limit)
+    render json: @names, each_serializer: YearNameSerializer, :callback => params[:callback]
+  end
+
+  # GET /v1/largest_amount_decrease_for_year_and_gender
+  # - params: year, gender, limit
+  def largest_amount_decrease_for_year_and_gender
+    limit = set_limit
+    @names = Year.largest_amount_decrease_for_year_and_gender(params[:year], params[:gender], limit)
+    render json: @names, each_serializer: YearNameSerializer, :callback => params[:callback]
+  end
+
+
+
+
   # GET /v1/years_amount_summary
   def years_amount_summary
     render json: Year.years_amount_summary, each_serializer: YearsAmountSummarySerializer, :callback => params[:callback]
