@@ -3,7 +3,7 @@ class V1Controller < ApplicationController
   # GET /v1/name
   # params: id
   def name
-    render json: Year.name_details(params[:id]), each_serializer: YearNameSerializer
+    render json: Year.name_details(params[:id]), each_serializer: YearNameSerializer, :callback => params[:callback]
   end
 
   # GET /v1/search
@@ -11,7 +11,7 @@ class V1Controller < ApplicationController
   def search
     limit = params[:limit].nil? || params[:limit].to_i == 0 ? 20 : params[:limit].to_i
     @names = Year.name_search(params[:q]).limit(limit)
-    render json: @names, each_serializer: YearNameSerializer
+    render json: @names, each_serializer: YearNameSerializer, :callback => params[:callback]
   end
 
 
