@@ -94,7 +94,7 @@ class V1Controller < ApplicationController
     render json: Year.years_amount_summary, each_serializer: YearsAmountSummarySerializer, :callback => params[:callback]
   end
 
-  # GET /v1/years_amount_summary
+  # GET /v1/years_unique_names_summary
   def years_unique_names_summary
     render json: Year.years_unique_names_summary, each_serializer: YearsUniqueNamesSummarySerializer, :callback => params[:callback]
   end

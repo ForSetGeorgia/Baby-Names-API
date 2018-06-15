@@ -155,10 +155,10 @@ class Year < ApplicationRecord
       'years.year,
       sum(years.amount) as total_births,
       count(years.amount) as total_unique_names,
-      sum(case when names.gender = \'f\' then years.amount else 0 end) as total_girl_births,
-      sum(case when names.gender = \'m\' then years.amount else 0 end) as total_boy_births,
-      sum(case when names.gender = \'f\' then 1 else 0 end) as total_girl_names,
-      sum(case when names.gender = \'m\' then 1 else 0 end) as total_boy_names'
+      sum(case when names.gender = \'g\' then years.amount else 0 end) as total_girl_births,
+      sum(case when names.gender = \'b\' then years.amount else 0 end) as total_boy_births,
+      sum(case when names.gender = \'g\' then 1 else 0 end) as total_girl_names,
+      sum(case when names.gender = \'b\' then 1 else 0 end) as total_boy_names'
     )
     .where('years.amount > 0')
     .with_name

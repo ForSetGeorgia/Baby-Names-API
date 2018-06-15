@@ -15,7 +15,7 @@ class YearNameSerializer < ActiveModel::Serializer
   end
 
   def gender
-    "#{object.gender == 'f' ? 'Girl' : object.gender == 'm' ? 'Boy' : '' }"
+    "#{object.gender == 'g' ? 'Girl' : object.gender == 'b' ? 'Boy' : '' }"
   end
 
 end

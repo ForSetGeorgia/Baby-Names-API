@@ -143,7 +143,7 @@ namespace :data do
 
     start = Time.now
     years =* (2008..2017)
-    genders = ['m', 'f']
+    genders = ['b', 'g']
 
     Year.transaction do
       years.each do |year|
