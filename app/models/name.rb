@@ -15,7 +15,7 @@ class Name < ApplicationRecord
   ## URL SLUGS
   ##################
   extend FriendlyId
-  friendly_id :name_ka, use: :slugged
+  friendly_id :name_ka, use: :sequentially_slugged
 
   # for genereate friendly_id
   def should_generate_new_friendly_id?

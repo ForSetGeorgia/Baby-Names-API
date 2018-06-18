@@ -10,12 +10,6 @@ class Year < ApplicationRecord
   validates_presence_of :year
 
   ##################
-  ## URL SLUGS
-  ##################
-  extend FriendlyId
-  friendly_id :year, use: :slugged
-
-  ##################
   ## SCOPES
   ##################
   def self.unique
