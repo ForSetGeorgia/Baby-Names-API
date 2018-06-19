@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
 
       get 'years_amount_summary', defaults: { format: 'json' }
+      get 'year_amount_summary', defaults: { format: 'json' }
       get 'years_unique_names_summary', defaults: { format: 'json' }
     end
 

@@ -9,9 +9,9 @@ class V1Controller < ApplicationController
   # GET /v1/search
   # - params: q, limit
   def search
-    limit = params[:limit].nil? || params[:limit].to_i == 0 ? 20 : params[:limit].to_i
-    @names = Year.name_search(params[:q]).limit(limit)
-    render json: @names, each_serializer: YearNameSerializer, :callback => params[:callback]
+    limit = set_limit
+    @names = Year.name_search(params[:q]).paginate(per_page: limit, page: params[:page])
+    render json: @names, each_serializer: YearNameSerializer, meta: meta_attributes(@names), :callback => params[:callback]
   end
 
 
@@ -94,6 +94,12 @@ class V1Controller < ApplicationController
     render json: Year.years_amount_summary, each_serializer: YearsAmountSummarySerializer, :callback => params[:callback]
   end
 
+  # GET /v1/year_amount_summary
+  # - params: year
+  def year_amount_summary
+    render json: Year.year_amount_summary(params[:year]), each_serializer: YearsAmountSummarySerializer, :callback => params[:callback]
+  end
+
   # GET /v1/years_unique_names_summary
   def years_unique_names_summary
     render json: Year.years_unique_names_summary, each_serializer: YearsUniqueNamesSummarySerializer, :callback => params[:callback]
@@ -105,4 +111,15 @@ class V1Controller < ApplicationController
   def set_limit
     params[:limit].nil? || params[:limit].to_i == 0 ? @default_limit : params[:limit].to_i
   end
+
+  def meta_attributes(collection, extra_meta = {})
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page,
+      prev_page: collection.previous_page,
+      total_pages: collection.total_pages,
+      total_count: collection.total_entries
+    }.merge(extra_meta)
+  end
+
 end

@@ -160,6 +160,12 @@ class Year < ApplicationRecord
     .sorted_year_desc
   end
 
+  # for a year, count how many babies were born and how many unique names there were
+  def self.year_amount_summary(year)
+    years_amount_summary.where('years.year = ?', year)
+  end
+
+
   # for each year, create a range of and count how many amounts fall into that range
   def self.years_unique_names_summary
     select(
