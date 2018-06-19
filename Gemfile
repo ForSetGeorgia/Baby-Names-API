@@ -9,6 +9,10 @@ gem 'pg', '~> 1.0'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
+
+# auto restart puma workers to keep memory usage low
+gem 'puma_worker_killer', '~> 0.1.0'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -45,6 +49,13 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  # Server-related tasks (such as deploy)
+  gem 'mina', '~> 0.3.8', require: false
+
+  # Mina for multiple servers
+  gem 'mina-multistage', '~> 1.0.2', require: false
+
 end
 
 group :test do
