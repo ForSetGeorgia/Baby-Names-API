@@ -166,88 +166,88 @@ namespace :deploy do
   task :rollback do
     # First runs original deploy:rollback task, then runs below code
     invoke :'puma:restart'
-    invoke :'deploy:assets:copy_current_to_tmp'
+    # invoke :'deploy:assets:copy_current_to_tmp'
     invoke :'git:remove_fetch_head'
   end
 
-  namespace :assets do
-    desc 'Decides whether to precompile assets'
-    task :decide_whether_to_precompile do
-      set :precompile_assets, false
-      if ENV['precompile'] == 'true'
-        set :precompile_assets, true
-      else
-        # Locations where assets may have changed; check Gemfile.lock to
-        # ensure that gem assets are the same
-        asset_files_directories = 'app/assets vendor/assets Gemfile.lock'
+  # namespace :assets do
+  #   desc 'Decides whether to precompile assets'
+  #   task :decide_whether_to_precompile do
+  #     set :precompile_assets, false
+  #     if ENV['precompile'] == 'true'
+  #       set :precompile_assets, true
+  #     else
+  #       # Locations where assets may have changed; check Gemfile.lock to
+  #       # ensure that gem assets are the same
+  #       asset_files_directories = 'app/assets vendor/assets Gemfile.lock'
 
-        current_commit = local_commit_hash
+  #       current_commit = local_commit_hash
 
-        # If FETCH_HEAD file does not exist or deployed_commit doesn't look
-        # like a hash, ask user to force precompile
-        if deployed_commit.nil? || deployed_commit.length != 40
-          system %(echo "WARNING: Cannot determine the commit hash of the")
-          system %(echo "previous release on the server.")
-          system %(echo "If this is your first deploy, deploy like this:")
-          system %(echo "")
-          system %(echo "mina #{stage} deploy first_deploy=true --verbose")
-          system %(echo "")
-          system %(echo "If not, you can force precompile like this:")
-          system %(echo "")
-          system %(echo "mina #{stage} deploy precompile=true --verbose")
-          system %(echo "")
-          exit
-        else
-          git_diff = diff_for_files_btw_commits(
-            deployed_commit,
-            current_commit,
-            asset_files_directories
-          )
+  #       # If FETCH_HEAD file does not exist or deployed_commit doesn't look
+  #       # like a hash, ask user to force precompile
+  #       if deployed_commit.nil? || deployed_commit.length != 40
+  #         system %(echo "WARNING: Cannot determine the commit hash of the")
+  #         system %(echo "previous release on the server.")
+  #         system %(echo "If this is your first deploy, deploy like this:")
+  #         system %(echo "")
+  #         system %(echo "mina #{stage} deploy first_deploy=true --verbose")
+  #         system %(echo "")
+  #         system %(echo "If not, you can force precompile like this:")
+  #         system %(echo "")
+  #         system %(echo "mina #{stage} deploy precompile=true --verbose")
+  #         system %(echo "")
+  #         exit
+  #       else
+  #         git_diff = diff_for_files_btw_commits(
+  #           deployed_commit,
+  #           current_commit,
+  #           asset_files_directories
+  #         )
 
-          # If git diff length is not 0, then either 1) the assets have
-          # changed or 2) git cannot recognize the deployed commit and
-          # issues an error. In both these situations, precompile assets.
-          if git_diff.nil? || git_diff.length != 0
-            set :precompile_assets, true
-          else
-            system %(echo "-----> Assets unchanged; skipping precompile assets")
-          end
-        end
-      end
-    end
+  #         # If git diff length is not 0, then either 1) the assets have
+  #         # changed or 2) git cannot recognize the deployed commit and
+  #         # issues an error. In both these situations, precompile assets.
+  #         if git_diff.nil? || git_diff.length != 0
+  #           set :precompile_assets, true
+  #         else
+  #           system %(echo "-----> Assets unchanged; skipping precompile assets")
+  #         end
+  #       end
+  #     end
+  #   end
 
-    desc 'Precompile assets locally and rsync to tmp/assets folder on server.'
-    task :local_precompile do
-      system %(echo "-----> Cleaning assets locally")
-      system %(RAILS_ENV=#{rails_env} bundle exec \
-                 rake assets:clean RAILS_GROUPS=assets)
+  #   desc 'Precompile assets locally and rsync to tmp/assets folder on server.'
+  #   task :local_precompile do
+  #     system %(echo "-----> Cleaning assets locally")
+  #     system %(RAILS_ENV=#{rails_env} bundle exec \
+  #                rake assets:clean RAILS_GROUPS=assets)
 
-      system %(echo "-----> Precompiling assets locally")
-      system %(RAILS_ENV=#{rails_env} bundle exec \
-                 rake assets:precompile RAILS_GROUPS=assets)
+  #     system %(echo "-----> Precompiling assets locally")
+  #     system %(RAILS_ENV=#{rails_env} bundle exec \
+  #                rake assets:precompile RAILS_GROUPS=assets)
 
-      system %[echo "-----> RSyncing remote assets (tmp/assets) \
-                     with local assets (#{precompiled_assets_dir})"]
+  #     system %[echo "-----> RSyncing remote assets (tmp/assets) \
+  #                    with local assets (#{precompiled_assets_dir})"]
 
-      system %(rsync #{rsync_verbose} -e 'ssh #{identity_file_with_arg} -p #{ssh_port}' \
-                 --recursive --times --delete ./#{precompiled_assets_dir}/. \
-                 #{user}@#{domain}:#{deploy_to}/tmp/assets)
-    end
+  #     system %(rsync #{rsync_verbose} -e 'ssh #{identity_file_with_arg} -p #{ssh_port}' \
+  #                --recursive --times --delete ./#{precompiled_assets_dir}/. \
+  #                #{user}@#{domain}:#{deploy_to}/tmp/assets)
+  #   end
 
-    task :copy_tmp_to_current do
-      queue %(echo "-----> Copying assets from \
-                    tmp/assets to current/#{precompiled_assets_dir}")
-      queue! %(cp -a #{deploy_to}/tmp/assets/. ./#{precompiled_assets_dir})
-    end
+  #   task :copy_tmp_to_current do
+  #     queue %(echo "-----> Copying assets from \
+  #                   tmp/assets to current/#{precompiled_assets_dir}")
+  #     queue! %(cp -a #{deploy_to}/tmp/assets/. ./#{precompiled_assets_dir})
+  #   end
 
-    task :copy_current_to_tmp do
-      queue %(echo "-----> Replacing tmp/assets with")
-      queue %(echo " current/#{precompiled_assets_dir}")
-      queue! %(rm -r #{deploy_to}/tmp/assets)
-      queue! %(cp -a #{full_current_path}/#{precompiled_assets_dir}/. \
-                 #{deploy_to}/tmp/assets)
-    end
-  end
+  #   task :copy_current_to_tmp do
+  #     queue %(echo "-----> Replacing tmp/assets with")
+  #     queue %(echo " current/#{precompiled_assets_dir}")
+  #     queue! %(rm -r #{deploy_to}/tmp/assets)
+  #     queue! %(cp -a #{full_current_path}/#{precompiled_assets_dir}/. \
+  #                #{deploy_to}/tmp/assets)
+  #   end
+  # end
 end
 
 desc 'Setup directories and .env file; should be run before first deploy.'
@@ -306,13 +306,13 @@ task deploy: :environment do
     end
 
     invoke :'deploy:check_revision'
-    invoke :'deploy:assets:decide_whether_to_precompile'
-    invoke :'deploy:assets:local_precompile' if precompile_assets
+    # invoke :'deploy:assets:decide_whether_to_precompile'
+    # invoke :'deploy:assets:local_precompile' if precompile_assets
     invoke :'git:clone'
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
     invoke :'rails:db_migrate'
-    invoke :'deploy:assets:copy_tmp_to_current'
+    # invoke :'deploy:assets:copy_tmp_to_current'
     invoke :'nginx:generate_conf'
     invoke :'puma:generate_conf'
     invoke :'rails:generate_robots'
