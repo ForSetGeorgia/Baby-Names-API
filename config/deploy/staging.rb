@@ -6,4 +6,4 @@ set :repository, 'https://github.com/ForSetGeorgia/Baby-Names-API.git'
 set :branch, 'deploy'
 set :web_url, ENV['STAGING_WEB_URL']
 set :visible_to_robots, false
-set :use_ssl, false
+set :use_ssl, true
