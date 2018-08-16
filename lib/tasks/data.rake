@@ -25,8 +25,8 @@ namespace :data do
       idx_first_year = 2
 
       # dropping all existing names
-      Name.delete_all
       Year.delete_all
+      Name.delete_all
       ActiveRecord::Base.connection.execute("TRUNCATE names CASCADE")
 
       # for each name:
@@ -38,35 +38,38 @@ namespace :data do
           puts "-----------\nname #{idx}; time so far = #{Time.now - start} seconds" if idx%100 == 0
           # skip header row
           if idx > 0
-            # create name
-            name = Name.create(
-              name_ka: row[0].gsub("'", "\""),
-              name_en: row[0].gsub("'", "\"").latinize.titlecase,
-              gender: row[1].nil? ? nil : row[1].downcase[0]
-            )
+            # if gender is delete, skip
+            if row[1].nil? || row[1].downcase[0] != 'delete'
+              # create name
+              name = Name.create(
+                name_ka: row[0].gsub("'", "\""),
+                name_en: row[0].gsub("'", "\"").latinize.titlecase,
+                gender: row[1].nil? ? nil : row[1].downcase[0]
+              )
 
-            # create year
-            years.each_with_index do |year, idx_year|
-              name_year = name.years.new(year: year)
-              name_year.amount = get_value(row[idx_year+idx_first_year])
-              idx_last_year = idx_year+idx_first_year-1
+              # create year
+              years.each_with_index do |year, idx_year|
+                name_year = name.years.new(year: year)
+                name_year.amount = get_value(row[idx_year+idx_first_year])
+                idx_last_year = idx_year+idx_first_year-1
 
-              # if this is not the first year, then compute the changes
-              if idx_year > 0
-                last_year_amount = get_value(row[idx_last_year])
-                first_year_amount = get_value(row[idx_first_year])
+                # if this is not the first year, then compute the changes
+                if idx_year > 0
+                  last_year_amount = get_value(row[idx_last_year])
+                  first_year_amount = get_value(row[idx_first_year])
 
-                name_year.amount_year_change = name_year.amount - last_year_amount
-                name_year.amount_overall_change = name_year.amount - first_year_amount
+                  name_year.amount_year_change = name_year.amount - last_year_amount
+                  name_year.amount_overall_change = name_year.amount - first_year_amount
 
-                if last_year_amount > 0
-                  name_year.amount_year_change_percent = ((name_year.amount - last_year_amount).to_f / last_year_amount*100).round(2)
+                  if last_year_amount > 0
+                    name_year.amount_year_change_percent = ((name_year.amount - last_year_amount).to_f / last_year_amount*100).round(2)
+                  end
+                  if first_year_amount > 0
+                    name_year.amount_overall_change_percent = ((name_year.amount - first_year_amount).to_f / first_year_amount*100).round(2)
+                  end
                 end
-                if first_year_amount > 0
-                  name_year.amount_overall_change_percent = ((name_year.amount - first_year_amount).to_f / first_year_amount*100).round(2)
-                end
+                name_year.save
               end
-              name_year.save
             end
           end
         end

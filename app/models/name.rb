@@ -9,7 +9,7 @@ class Name < ApplicationRecord
   ## VALIDATIONS
   ##################
   validates_presence_of :name_ka, :name_en
-  validates_inclusion_of :gender, in: ['b', 'g'], allow_nil: true
+  validates_inclusion_of :gender, in: ['b', 'g', 'x'], allow_nil: true
 
   ##################
   ## URL SLUGS
